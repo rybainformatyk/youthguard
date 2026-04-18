@@ -180,11 +180,11 @@ public class MonitoringService extends Service {
                 smsManager = SmsManager.getDefault();
             }
 
-            List<DatabaseHelper.Guardian> guardians = dbHelper.getAllGuardians();
+            List<Guardian> guardians = dbHelper.getAllGuardians(); // <-- NAPRAWIONA LINIJKA
             boolean sent = false;
             
-            for (DatabaseHelper.Guardian guardian : guardians) {
-                String num = guardian.phone;
+            for (Guardian guardian : guardians) { // <-- NAPRAWIONA LINIJKA
+                String num = guardian.getPhone();
                 if (num != null && !num.isEmpty()) {
                     String cleanNum = num.replaceAll("\\s+", "");
                     ArrayList<String> parts = smsManager.divideMessage(message);

@@ -23,7 +23,6 @@ import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -41,21 +40,23 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements GuardianAdapter.OnGuardianDeleteListener {
 
-    private Button startBtn, addGuardianBtn, settingsBtn;
+    private Button startBtn, settingsBtn;
     private ImageButton historyBtn;
+    private FloatingActionButton addGuardianFab;
     private TextView statusText, speechText, warningText;
     private View micIndicator;
     private RecyclerView guardiansRecyclerView;
     private GuardianAdapter guardianAdapter;
-    private List<DatabaseHelper.Guardian> guardianList;
+    private List<Guardian> guardianList;
     
     private SharedPreferences sharedPreferences;
     private DatabaseHelper dbHelper;
@@ -72,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
             result -> {
                 if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                     Uri contactUri = result.getData().getData();
-                    queryContactData(contactUri);
+                    queryContactData(contactUri, true);
                 }
             }
     );
@@ -132,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         startBtn = findViewById(R.id.startBtn);
-        addGuardianBtn = findViewById(R.id.addGuardianBtn);
+        addGuardianFab = findViewById(R.id.addGuardianFab);
         historyBtn = findViewById(R.id.historyBtn);
         settingsBtn = findViewById(R.id.settingsBtn);
         statusText = findViewById(R.id.statusText);
@@ -144,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
         guardiansRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         loadGuardians();
 
-        addGuardianBtn.setOnClickListener(v -> showAddGuardianDialog());
+        addGuardianFab.setOnClickListener(v -> showAddGuardianOptions());
         historyBtn.setOnClickListener(v -> startActivity(new Intent(this, HistoryActivity.class)));
         settingsBtn.setOnClickListener(v -> startActivity(new Intent(this, SettingsActivity.class)));
         startBtn.setOnClickListener(v -> toggleProtection());
@@ -164,23 +165,33 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadGuardians() {
         guardianList = dbHelper.getAllGuardians();
-        guardianAdapter = new GuardianAdapter(guardianList);
+        guardianAdapter = new GuardianAdapter(guardianList, this);
         guardiansRecyclerView.setAdapter(guardianAdapter);
+    }
+
+    @Override
+    public void onDelete(Guardian guardian) {
+        dbHelper.deleteGuardian(guardian.getId());
+        loadGuardians();
+    }
+
+    private void showAddGuardianOptions() {
+        new AlertDialog.Builder(this)
+            .setTitle("Dodaj Opiekuna")
+            .setItems(new CharSequence[]{"Wybierz z kontaktów", "Dodaj ręcznie"}, (dialog, which) -> {
+                if (which == 0) {
+                    pickContact();
+                } else {
+                    showAddGuardianDialog();
+                }
+            })
+            .show();
     }
 
     private void showAddGuardianDialog() {
         View view = LayoutInflater.from(this).inflate(R.layout.dialog_add_guardian, null);
         currentDialogNameInput = view.findViewById(R.id.dialogGuardianName);
         currentDialogPhoneInput = view.findViewById(R.id.dialogGuardianPhone);
-        Button pickContactBtn = view.findViewById(R.id.pickContactBtn);
-
-        pickContactBtn.setOnClickListener(v -> {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, 102);
-            } else {
-                pickContact();
-            }
-        });
 
         new AlertDialog.Builder(this)
             .setView(view)
@@ -199,18 +210,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void pickContact() {
-        Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
-        contactPickerLauncher.launch(intent);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, 102);
+        } else {
+            Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
+            contactPickerLauncher.launch(intent);
+        }
     }
 
-    private void queryContactData(Uri contactUri) {
+    private void queryContactData(Uri contactUri, boolean autoAdd) {
         String[] projection = {ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME};
         try (Cursor cursor = getContentResolver().query(contactUri, projection, null, null, null)) {
             if (cursor != null && cursor.moveToFirst()) {
                 String number = cursor.getString(0);
                 String name = cursor.getString(1);
-                if (currentDialogNameInput != null) currentDialogNameInput.setText(name);
-                if (currentDialogPhoneInput != null) currentDialogPhoneInput.setText(number);
+
+                if (autoAdd) {
+                    dbHelper.addGuardian(name, number);
+                    loadGuardians();
+                    Toast.makeText(this, "Dodano opiekuna: " + name, Toast.LENGTH_SHORT).show();
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -219,39 +238,47 @@ public class MainActivity extends AppCompatActivity {
 
     private void toggleProtection() {
         if (isProtectionActive) {
-            isProtectionActive = false;
             stopService(new Intent(this, MonitoringService.class));
-            updateUIState();
-        } else checkPermissions();
+        } else {
+            checkPermissions();
+        }
+        isProtectionActive = !isProtectionActive;
+        updateUIState();
     }
 
     private void updateUIState() {
         if (isProtectionActive) {
             startBtn.setText("Wyłącz ochronę");
             statusText.setText("Ochrona aktywna");
-            statusText.setTextColor(ContextCompat.getColor(this, R.color.mic_listening));
-            if (micIndicator != null) micIndicator.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.mic_listening));
+            statusText.setTextColor(Color.GREEN);
+            if (micIndicator != null && micIndicator.getBackground() != null) {
+                micIndicator.getBackground().setTint(Color.GREEN);
+            }
         } else {
             startBtn.setText("Włącz ochronę");
             statusText.setText("Ochrona wyłączona");
-            statusText.setTextColor(ContextCompat.getColor(this, R.color.onSurfaceVariant));
-            if (micIndicator != null) micIndicator.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.mic_idle));
+            statusText.setTextColor(Color.RED);
+            if (micIndicator != null && micIndicator.getBackground() != null) {
+                micIndicator.getBackground().setTint(Color.RED);
+            }
         }
     }
 
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel c = new NotificationChannel(CHANNEL_ID, "Alerty YouthGuard", NotificationManager.IMPORTANCE_HIGH);
-            NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            if (manager != null) manager.createNotificationChannel(c);
+            getSystemService(NotificationManager.class).createNotificationChannel(c);
         }
     }
 
     private void showTopNotification(String t, String c) {
-        NotificationCompat.Builder b = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(android.R.drawable.ic_dialog_alert).setContentTitle(t).setContentText(c)
-                .setPriority(NotificationCompat.PRIORITY_HIGH).setAutoCancel(true);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+            NotificationCompat.Builder b = new NotificationCompat.Builder(this, CHANNEL_ID)
+                    .setSmallIcon(R.drawable.ic_alert)
+                    .setContentTitle(t)
+                    .setContentText(c)
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setAutoCancel(true);
             NotificationManagerCompat.from(this).notify(1, b.build());
         }
     }
@@ -261,23 +288,17 @@ public class MainActivity extends AppCompatActivity {
             Uri n = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
             Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), n);
             if (r != null) r.play();
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private ArrayList<String> getActiveKeywords() {
         ArrayList<String> list = new ArrayList<>();
-        if (sharedPreferences.getBoolean("detect_drugs", true)) {
-            list.addAll(Arrays.asList(drugKeywords));
-        }
-        if (sharedPreferences.getBoolean("detect_self_harm", true)) {
-            list.addAll(Arrays.asList(selfHarmKeywords));
-        }
-        if (sharedPreferences.getBoolean("detect_bullying", true)) {
-            list.addAll(Arrays.asList(bullyingKeywords));
-        }
-        if (sharedPreferences.getBoolean("detect_alcohol", true)) {
-            list.addAll(Arrays.asList(alcoholKeywords));
-        }
+        if (sharedPreferences.getBoolean("detect_drugs", true)) list.addAll(Arrays.asList(drugKeywords));
+        if (sharedPreferences.getBoolean("detect_self_harm", true)) list.addAll(Arrays.asList(selfHarmKeywords));
+        if (sharedPreferences.getBoolean("detect_bullying", true)) list.addAll(Arrays.asList(bullyingKeywords));
+        if (sharedPreferences.getBoolean("detect_alcohol", true)) list.addAll(Arrays.asList(alcoholKeywords));
         return list;
     }
 
@@ -304,64 +325,40 @@ public class MainActivity extends AppCompatActivity {
             toRequest.add(Manifest.permission.POST_NOTIFICATIONS);
         }
 
-        ArrayList<String> neededPermissions = new ArrayList<>();
+        ArrayList<String> needed = new ArrayList<>();
         for (String p : toRequest) {
             if (ContextCompat.checkSelfPermission(this, p) != PackageManager.PERMISSION_GRANTED) {
-                neededPermissions.add(p);
+                needed.add(p);
             }
         }
 
-        if (neededPermissions.isEmpty()) {
-            startMonitoringService();
+        if (!needed.isEmpty()) {
+            ActivityCompat.requestPermissions(this, needed.toArray(new String[0]), PERMISSION_REQUEST_CODE);
         } else {
-            ActivityCompat.requestPermissions(this, neededPermissions.toArray(new String[0]), PERMISSION_REQUEST_CODE);
+            startMonitoringService();
         }
     }
 
     private void startMonitoringService() {
-        isProtectionActive = true;
         ContextCompat.startForegroundService(this, new Intent(this, MonitoringService.class));
-        updateUIState();
     }
 
     @Override
     public void onRequestPermissionsResult(int rc, @NonNull String[] ps, @NonNull int[] gr) {
         super.onRequestPermissionsResult(rc, ps, gr);
         if (rc == PERMISSION_REQUEST_CODE) {
-            boolean allGranted = true;
-            for (int res : gr) if (res != PackageManager.PERMISSION_GRANTED) allGranted = false;
-            if (allGranted) startMonitoringService();
-            else Toast.makeText(this, "Wymagane uprawnienia!", Toast.LENGTH_SHORT).show();
-        } else if (rc == 102) {
-            if (gr.length > 0 && gr[0] == PackageManager.PERMISSION_GRANTED) {
-                pickContact();
-            } else {
-                Toast.makeText(this, "Dostęp do kontaktów odrzucony", Toast.LENGTH_SHORT).show();
-            }
+            boolean all = true;
+            for (int r : gr) if (r != PackageManager.PERMISSION_GRANTED) all = false;
+            if (all) startMonitoringService();
         }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        try { unregisterReceiver(speechReceiver); unregisterReceiver(confirmationReceiver); } catch (Exception e) {}
-    }
-
-    private class GuardianAdapter extends RecyclerView.Adapter<GuardianAdapter.VH> {
-        private List<DatabaseHelper.Guardian> list;
-        public GuardianAdapter(List<DatabaseHelper.Guardian> list) { this.list = list; }
-        @NonNull @Override public VH onCreateViewHolder(@NonNull ViewGroup p, int vt) {
-            return new VH(LayoutInflater.from(p.getContext()).inflate(R.layout.item_guardian, p, false));
-        }
-        @Override public void onBindViewHolder(@NonNull VH h, int pos) {
-            DatabaseHelper.Guardian g = list.get(pos);
-            h.n.setText(g.name); h.p.setText(g.phone);
-            h.d.setOnClickListener(v -> { dbHelper.deleteGuardian(g.id); loadGuardians(); });
-        }
-        @Override public int getItemCount() { return list.size(); }
-        class VH extends RecyclerView.ViewHolder {
-            TextView n, p; ImageButton d;
-            public VH(View v) { super(v); n = v.findViewById(R.id.guardianName); p = v.findViewById(R.id.guardianPhone); d = v.findViewById(R.id.deleteGuardianBtn); }
-        }
+        try { 
+            unregisterReceiver(speechReceiver); 
+            unregisterReceiver(confirmationReceiver); 
+        } catch (Exception e) {}
     }
 }

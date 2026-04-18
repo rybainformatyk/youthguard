@@ -24,12 +24,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_G_NAME = "name";
     public static final String COL_G_PHONE = "phone";
 
-    // Modeli danych wewnątrz Helpera, by ograniczyć liczbę plików
-    public static class Guardian {
-        public int id;
-        public String name, phone;
-        public Guardian(int id, String name, String phone) { this.id = id; this.name = name; this.phone = phone; }
-    }
+    // UWAGA: Usunięto zagnieżdżoną klasę Guardian. Używamy teraz Guardian.java
 
     public static class AlertItem {
         public int id;
@@ -87,11 +82,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         getWritableDatabase().delete(TABLE_GUARDIANS, COL_G_ID + "=?", new String[]{String.valueOf(id)});
     }
 
+    // NAPRAWIONA METODA: Zwraca teraz List<Guardian> zamiast List<DatabaseHelper.Guardian>
     public List<Guardian> getAllGuardians() {
         List<Guardian> list = new ArrayList<>();
         Cursor c = getReadableDatabase().rawQuery("SELECT * FROM " + TABLE_GUARDIANS, null);
         if (c.moveToFirst()) {
-            do { list.add(new Guardian(c.getInt(0), c.getString(1), c.getString(2))); } while (c.moveToNext());
+            do {
+                // Używamy teraz zewnętrznej klasy Guardian
+                list.add(new Guardian(c.getInt(0), c.getString(1), c.getString(2)));
+            } while (c.moveToNext());
         }
         c.close();
         return list;

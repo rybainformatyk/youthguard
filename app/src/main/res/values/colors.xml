@@ -1,46 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
 
-    <!-- Nowa, żywsza paleta kolorów -->
-    <color name="primary">#7E57C2</color> <!-- Głęboki fiolet -->
-    <color name="primary_dark">#5E35B1</color> <!-- Ciemniejszy fiolet -->
-    <color name="primary_light">#B39DDB</color> <!-- Jasny fiolet -->
-    <color name="accent">#81C784</color> <!-- Limonkowa zieleń -->
+    <!-- Styl Cyber-Refined -->
+    <color name="primary">#A374FF</color> <!-- Elektryczny fiolet -->
+    <color name="primary_dark">#000000</color>
+    <color name="primary_light">#1A1A1A</color>
+    <color name="accent">#00E676</color> <!-- Żywa zieleń -->
     
-    <color name="background_gradient_start">#4A148C</color> <!-- Ciemny fiolet do gradientu -->
-    <color name="background_gradient_end">#303F9F</color> <!-- Indygo do gradientu -->
+    <color name="text_primary">#F5F5F5</color>
+    <color name="text_secondary">#9E9E9E</color>
 
-    <color name="text_primary">#FFFFFF</color>
-    <color name="text_secondary">#E0E0E0</color>
-
-    <color name="card_background">#9575CD</color> <!-- Lawendowy kolor karty -->
-    <color name="button_background">@color/accent</color>
+    <color name="card_background">#0A0A0A</color> 
+    <color name="card_stroke">#1F1F1F</color> <!-- Subtelna linia graniczna -->
+    <color name="button_background">#121212</color>
     
-    <color name="mic_idle">#BDBDBD</color> <!-- Szary neutralny -->
-    <color name="mic_listening">#F44336</color> <!-- Czerwony, gdy nasłuchuje -->
+    <color name="mic_idle">#FF3D00</color> <!-- Neonowa czerwień -->
+    <color name="mic_listening">#00E676</color> <!-- Neonowa zieleń -->
 
-    <!-- Statusy (pozostawiamy je dla kontrastu) -->
-    <color name="status_pending_bg">#FFF9C4</color>
-    <color name="status_confirmed_bg">#FFCDD2</color>
-    <color name="status_rejected_bg">#C8E6C9</color>
-    <color name="status_pending_text">#FBC02D</color>
-    <color name="status_confirmed_text">#D32F2F</color>
-    <color name="status_rejected_text">#388E3C</color>
+    <!-- Statusy (lekko przezroczyste tła dla efektu szkła) -->
+    <color name="status_pending_bg">#1AFFFFFF</color>
+    <color name="status_confirmed_bg">#26FF5252</color>
+    <color name="status_rejected_bg">#2600E676</color>
     
-    <!-- Material 3 - te kolory są potrzebne dla niektórych komponentów -->
-    <color name="onPrimary">#FFFFFF</color>
-    <color name="primaryContainer">#EADDFF</color>
-    <color name="onPrimaryContainer">#21005D</color>
-    <color name="secondary">#625B71</color>
-    <color name="onSecondary">#FFFFFF</color>
-    <color name="error">#B3261E</color>
-    <color name="onError">#FFFFFF</color>
-    <color name="outline">#E0E0E0</color>
-    <color name="background">@color/background_gradient_end</color>
-    <color name="surface">@color/background_gradient_end</color>
-    <color name="surfaceVariant">#5E35B1</color>
+    <color name="status_pending_text">#FFD54F</color>
+    <color name="status_confirmed_text">#FF5252</color>
+    <color name="status_rejected_text">#00E676</color>
+    
+    <!-- Material 3 Overrides -->
+    <color name="background">#000000</color>
+    <color name="surface">#000000</color>
+    <color name="surfaceVariant">#0A0A0A</color>
     <color name="onSurface">#FFFFFF</color>
-    <color name="onSurfaceVariant">#E0E0E0</color>
+    <color name="outline">#2C2C2C</color>
 </resources>

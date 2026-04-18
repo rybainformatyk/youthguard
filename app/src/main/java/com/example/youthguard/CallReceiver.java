@@ -44,14 +44,14 @@ public class CallReceiver extends BroadcastReceiver {
 
     private void checkAndStartMonitoring(Context context, String incomingNumber) {
         DatabaseHelper dbHelper = new DatabaseHelper(context);
-        List<DatabaseHelper.Guardian> guardians = dbHelper.getAllGuardians();
+        List<Guardian> guardians = dbHelper.getAllGuardians();
         
         boolean isGuardian = false;
         if (incomingNumber != null) {
             String normalizedIncoming = incomingNumber.replaceAll("\\s+", "");
-            for (DatabaseHelper.Guardian g : guardians) {
-                if (g.phone != null && !g.phone.isEmpty()) {
-                    String normalizedGuardian = g.phone.replaceAll("\\s+", "");
+            for (Guardian g : guardians) {
+                if (g.getPhone() != null && !g.getPhone().isEmpty()) {
+                    String normalizedGuardian = g.getPhone().replaceAll("\\s+", "");
                     if (normalizedIncoming.contains(normalizedGuardian)) {
                         isGuardian = true;
                         break;

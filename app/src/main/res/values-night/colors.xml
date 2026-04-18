@@ -3,44 +3,36 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <!-- Nowa, żywsza paleta kolorów dla trybu nocnego -->
-    <color name="primary">#7E57C2</color> <!-- Głęboki fiolet -->
-    <color name="primary_dark">#5E35B1</color> <!-- Ciemniejszy fiolet -->
-    <color name="primary_light">#B39DDB</color> <!-- Jasny fiolet -->
-    <color name="accent">#81C784</color> <!-- Limonkowa zieleń -->
+    <!-- Motyw Czarny (Amoled) - Ujednolicony z values/colors.xml -->
+    <color name="primary">#7E57C2</color> 
+    <color name="primary_dark">#000000</color> 
+    <color name="primary_light">#333333</color> 
+    <color name="accent">#81C784</color> 
     
-    <color name="background_gradient_start">#212121</color> <!-- Ciemny szary do gradientu -->
-    <color name="background_gradient_end">#311B92</color> <!-- Głęboki fiolet do gradientu -->
+    <color name="background_gradient_start">#000000</color> 
+    <color name="background_gradient_end">#000000</color> 
 
     <color name="text_primary">#FFFFFF</color>
-    <color name="text_secondary">#E0E0E0</color>
+    <color name="text_secondary">#BDBDBD</color>
 
-    <color name="card_background">#5E35B1</color> <!-- Ciemny fiolet karty -->
-    <color name="button_background">@color/accent</color>
+    <color name="card_background">#1A1A1A</color> 
+    <color name="button_background">#333333</color>
     
-    <color name="mic_idle">#BDBDBD</color> <!-- Szary neutralny -->
-    <color name="mic_listening">#F44336</color> <!-- Czerwony, gdy nasłuchuje -->
+    <color name="mic_idle">#FF0000</color>
+    <color name="mic_listening">#00FF00</color>
 
-    <!-- Statusy (dostosowane do ciemnego tła) -->
-    <color name="status_pending_bg">#4DFFF9C4</color>
-    <color name="status_confirmed_bg">#4DFFCDD2</color>
-    <color name="status_rejected_bg">#4DC8E6C9</color>
-    <color name="status_pending_text">#FBC02D</color>
-    <color name="status_confirmed_text">#FF8A80</color>
-    <color name="status_rejected_text">#81C784</color>
-
-    <!-- Material 3 - te kolory są potrzebne dla niektórych komponentów -->
+    <!-- Material 3 -->
     <color name="onPrimary">#FFFFFF</color>
-    <color name="primaryContainer">#4F378B</color>
-    <color name="onPrimaryContainer">#EADDFF</color>
-    <color name="secondary">#CCC2DC</color>
-    <color name="onSecondary">#332D41</color>
-    <color name="error">#F2B8B5</color>
-    <color name="onError">#601410</color>
-    <color name="outline">#E0E0E0</color>
-    <color name="background">@color/background_gradient_start</color>
-    <color name="surface">@color/background_gradient_start</color>
-    <color name="surfaceVariant">#49454F</color>
+    <color name="primaryContainer">#222222</color>
+    <color name="onPrimaryContainer">#FFFFFF</color>
+    <color name="secondary">#BBBBBB</color>
+    <color name="onSecondary">#000000</color>
+    <color name="error">#CF6679</color>
+    <color name="onError">#000000</color>
+    <color name="outline">#444444</color>
+    <color name="background">#000000</color>
+    <color name="surface">#000000</color>
+    <color name="surfaceVariant">#1A1A1A</color>
     <color name="onSurface">#FFFFFF</color>
-    <color name="onSurfaceVariant">#CAC4D0</color>
+    <color name="onSurfaceVariant">#BDBDBD</color>
 </resources>

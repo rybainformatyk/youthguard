@@ -21,7 +21,7 @@ public class SmsReceiver extends BroadcastReceiver {
                 Object[] pdus = (Object[]) bundle.get("pdus");
                 if (pdus != null) {
                     DatabaseHelper dbHelper = new DatabaseHelper(context);
-                    List<DatabaseHelper.Guardian> guardians = dbHelper.getAllGuardians();
+                    List<Guardian> guardians = dbHelper.getAllGuardians();
                     
                     for (Object pdu : pdus) {
                         SmsMessage smsMessage;
@@ -38,9 +38,9 @@ public class SmsReceiver extends BroadcastReceiver {
                         boolean isTrusted = false;
                         if (sender != null) {
                             String cleanSender = sender.replaceAll("\\s+", "");
-                            for (DatabaseHelper.Guardian g : guardians) {
-                                if (g.phone != null && !g.phone.isEmpty()) {
-                                    String cleanGuardian = g.phone.replaceAll("\\s+", "");
+                            for (Guardian g : guardians) {
+                                if (g.getPhone() != null && !g.getPhone().isEmpty()) {
+                                    String cleanGuardian = g.getPhone().replaceAll("\\s+", "");
                                     if (cleanSender.contains(cleanGuardian)) {
                                         isTrusted = true;
                                         break;
