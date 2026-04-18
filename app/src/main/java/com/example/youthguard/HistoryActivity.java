@@ -1,5 +1,7 @@
 package com.example.antyspamer;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,35 +54,38 @@ public class HistoryActivity extends AppCompatActivity {
 
         @Override public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             DatabaseHelper.AlertItem item = list.get(position);
-            holder.keyword.setText("Słowo: " + item.keyword);
-            holder.timestamp.setText(item.timestamp);
+            holder.keyword.setText(item.keyword.toUpperCase());
+            holder.timestamp.setText(item.timestamp.toUpperCase() + " | LOG_ID: " + item.id);
             holder.context.setText(item.context);
             holder.status.setText(item.status);
 
-            int bg = R.color.status_pending_bg;
-            int txt = R.color.status_pending_text;
-
+            int color = ContextCompat.getColor(HistoryActivity.this, R.color.primary);
+            
             if ("CONFIRMED".equals(item.status)) {
-                bg = R.color.status_confirmed_bg; txt = R.color.status_confirmed_text;
+                color = ContextCompat.getColor(HistoryActivity.this, R.color.status_confirmed_text);
             } else if ("REJECTED".equals(item.status)) {
-                bg = R.color.status_rejected_bg; txt = R.color.status_rejected_text;
+                color = ContextCompat.getColor(HistoryActivity.this, R.color.status_rejected_text);
+            } else {
+                color = ContextCompat.getColor(HistoryActivity.this, R.color.status_pending_text);
             }
 
-            holder.status.setBackgroundResource(R.drawable.status_bg_pending);
-            holder.status.setBackgroundTintList(ContextCompat.getColorStateList(HistoryActivity.this, bg));
-            holder.status.setTextColor(ContextCompat.getColor(HistoryActivity.this, txt));
+            holder.statusIndicator.setBackgroundColor(color);
+            holder.status.setTextColor(color);
+            holder.keyword.setTextColor(color);
         }
 
         @Override public int getItemCount() { return list.size(); }
 
         class ViewHolder extends RecyclerView.ViewHolder {
             TextView keyword, timestamp, context, status;
+            View statusIndicator;
             public ViewHolder(@NonNull View v) {
                 super(v);
                 keyword = v.findViewById(R.id.historyKeyword);
                 timestamp = v.findViewById(R.id.historyTimestamp);
                 context = v.findViewById(R.id.historyContext);
                 status = v.findViewById(R.id.historyStatus);
+                statusIndicator = v.findViewById(R.id.statusIndicatorBar);
             }
         }
     }

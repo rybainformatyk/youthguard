@@ -5,16 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
-    android:fitsSystemWindows="true"
-    android:padding="20dp">
+    android:fitsSystemWindows="true">
 
-    <!-- Custom Header -->
+    <!-- Header z marginesami -->
     <LinearLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
+        android:layout_marginTop="20dp"
+        android:layout_marginHorizontal="24dp"
         android:layout_marginBottom="32dp">
 
         <LinearLayout
@@ -65,7 +66,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingHorizontal="24dp"> <!-- Marginesy boczne dla całej treści -->
 
             <!-- MAIN CONTROL PANEL -->
             <com.google.android.material.card.MaterialCardView
@@ -158,7 +160,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="LOG ANALIZY SPEECH-TO-TEXT"
+                        android:text="MONITOROWANIE ROZMOWY NA ŻYWO"
                         android:textSize="11sp"
                         android:letterSpacing="0.1"
                         android:textColor="@color/text_secondary"
@@ -222,7 +224,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_margin="16dp"
+        android:layout_margin="24dp"
         app:fabCustomSize="64dp"
         app:maxImageSize="32dp"
         app:backgroundTint="@color/primary"
