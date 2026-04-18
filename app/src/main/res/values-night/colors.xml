@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Nowa, żywsza paleta kolorów dla trybu nocnego -->
+    <color name="primary">#7E57C2</color> <!-- Głęboki fiolet -->
+    <color name="primary_dark">#5E35B1</color> <!-- Ciemniejszy fiolet -->
+    <color name="primary_light">#B39DDB</color> <!-- Jasny fiolet -->
+    <color name="accent">#81C784</color> <!-- Limonkowa zieleń -->
+    
+    <color name="background_gradient_start">#212121</color> <!-- Ciemny szary do gradientu -->
+    <color name="background_gradient_end">#311B92</color> <!-- Głęboki fiolet do gradientu -->
+
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#E0E0E0</color>
+
+    <color name="card_background">#5E35B1</color> <!-- Ciemny fiolet karty -->
+    <color name="button_background">@color/accent</color>
+    
+    <color name="mic_idle">#BDBDBD</color> <!-- Szary neutralny -->
+    <color name="mic_listening">#F44336</color> <!-- Czerwony, gdy nasłuchuje -->
+
+    <!-- Statusy (dostosowane do ciemnego tła) -->
+    <color name="status_pending_bg">#4DFFF9C4</color>
+    <color name="status_confirmed_bg">#4DFFCDD2</color>
+    <color name="status_rejected_bg">#4DC8E6C9</color>
+    <color name="status_pending_text">#FBC02D</color>
+    <color name="status_confirmed_text">#FF8A80</color>
+    <color name="status_rejected_text">#81C784</color>
+
+    <!-- Material 3 - te kolory są potrzebne dla niektórych komponentów -->
+    <color name="onPrimary">#FFFFFF</color>
+    <color name="primaryContainer">#4F378B</color>
+    <color name="onPrimaryContainer">#EADDFF</color>
+    <color name="secondary">#CCC2DC</color>
+    <color name="onSecondary">#332D41</color>
+    <color name="error">#F2B8B5</color>
+    <color name="onError">#601410</color>
+    <color name="outline">#E0E0E0</color>
+    <color name="background">@color/background_gradient_start</color>
+    <color name="surface">@color/background_gradient_start</color>
+    <color name="surfaceVariant">#49454F</color>
+    <color name="onSurface">#FFFFFF</color>
+    <color name="onSurfaceVariant">#CAC4D0</color>
+</resources>
