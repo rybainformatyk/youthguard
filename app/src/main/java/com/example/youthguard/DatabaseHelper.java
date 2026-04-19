@@ -10,7 +10,7 @@ import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "TrustCallDB";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3; // Zwiększona wersja dla nowej kolumny
 
     public static final String TABLE_HISTORY = "history";
     public static final String COL_ID = "id";
@@ -18,19 +18,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_CONTEXT = "context";
     public static final String COL_TIMESTAMP = "timestamp";
     public static final String COL_STATUS = "status";
+    public static final String COL_RISK = "risk_level"; // NOWA KOLUMNA
 
     public static final String TABLE_GUARDIANS = "guardians";
     public static final String COL_G_ID = "id";
     public static final String COL_G_NAME = "name";
     public static final String COL_G_PHONE = "phone";
 
-    // UWAGA: Usunięto zagnieżdżoną klasę Guardian. Używamy teraz Guardian.java
-
     public static class AlertItem {
         public int id;
-        public String keyword, context, timestamp, status;
-        public AlertItem(int id, String keyword, String context, String timestamp, String status) {
-            this.id = id; this.keyword = keyword; this.context = context; this.timestamp = timestamp; this.status = status;
+        public String keyword, context, timestamp, status, riskLevel;
+        public AlertItem(int id, String keyword, String context, String timestamp, String status, String riskLevel) {
+            this.id = id; this.keyword = keyword; this.context = context; 
+            this.timestamp = timestamp; this.status = status; this.riskLevel = riskLevel;
         }
     }
 
@@ -40,9 +40,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE " + TABLE_HISTORY + " (" + COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                COL_KEYWORD + " TEXT, " + COL_CONTEXT + " TEXT, " + COL_TIMESTAMP + " DATETIME DEFAULT CURRENT_TIMESTAMP, " + COL_STATUS + " TEXT)");
-        db.execSQL("CREATE TABLE " + TABLE_GUARDIANS + " (" + COL_G_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COL_G_NAME + " TEXT, " + COL_G_PHONE + " TEXT)");
+        db.execSQL("CREATE TABLE " + TABLE_HISTORY + " (" + 
+                COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COL_KEYWORD + " TEXT, " + 
+                COL_CONTEXT + " TEXT, " + 
+                COL_TIMESTAMP + " DATETIME DEFAULT CURRENT_TIMESTAMP, " + 
+                COL_STATUS + " TEXT, " +
+                COL_RISK + " TEXT DEFAULT 'MEDIUM')");
+                
+        db.execSQL("CREATE TABLE " + TABLE_GUARDIANS + " (" + 
+                COL_G_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + 
+                COL_G_NAME + " TEXT, " + 
+                COL_G_PHONE + " TEXT)");
     }
 
     @Override
@@ -50,11 +59,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (oldVersion < 2) {
             db.execSQL("CREATE TABLE " + TABLE_GUARDIANS + " (" + COL_G_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COL_G_NAME + " TEXT, " + COL_G_PHONE + " TEXT)");
         }
+        if (oldVersion < 3) {
+            db.execSQL("ALTER TABLE " + TABLE_HISTORY + " ADD COLUMN " + COL_RISK + " TEXT DEFAULT 'MEDIUM'");
+        }
     }
 
-    public void addAlert(String keyword, String context, String status) {
+    public void addAlert(String keyword, String context, String status, String riskLevel) {
         ContentValues v = new ContentValues();
-        v.put(COL_KEYWORD, keyword); v.put(COL_CONTEXT, context); v.put(COL_STATUS, status);
+        v.put(COL_KEYWORD, keyword); 
+        v.put(COL_CONTEXT, context); 
+        v.put(COL_STATUS, status);
+        v.put(COL_RISK, riskLevel);
         getWritableDatabase().insert(TABLE_HISTORY, null, v);
     }
 
@@ -66,7 +81,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         List<AlertItem> list = new ArrayList<>();
         Cursor c = getReadableDatabase().rawQuery("SELECT * FROM " + TABLE_HISTORY + " ORDER BY " + COL_ID + " DESC", null);
         if (c.moveToFirst()) {
-            do { list.add(new AlertItem(c.getInt(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4))); } while (c.moveToNext());
+            do { 
+                list.add(new AlertItem(c.getInt(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5))); 
+            } while (c.moveToNext());
         }
         c.close();
         return list;
@@ -82,13 +99,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         getWritableDatabase().delete(TABLE_GUARDIANS, COL_G_ID + "=?", new String[]{String.valueOf(id)});
     }
 
-    // NAPRAWIONA METODA: Zwraca teraz List<Guardian> zamiast List<DatabaseHelper.Guardian>
     public List<Guardian> getAllGuardians() {
         List<Guardian> list = new ArrayList<>();
         Cursor c = getReadableDatabase().rawQuery("SELECT * FROM " + TABLE_GUARDIANS, null);
         if (c.moveToFirst()) {
             do {
-                // Używamy teraz zewnętrznej klasy Guardian
                 list.add(new Guardian(c.getInt(0), c.getString(1), c.getString(2)));
             } while (c.moveToNext());
         }

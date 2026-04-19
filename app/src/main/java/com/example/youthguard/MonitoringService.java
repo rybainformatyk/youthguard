@@ -68,8 +68,8 @@ public class MonitoringService extends Service {
                 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
 
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("YouthGuard czuwa nad Twoim bezpieczeństwem")
-                .setContentText("Aplikacja analizuje rozmowę w poszukiwaniu zagrożeń.")
+                .setContentTitle("YouthGuard czuwa")
+                .setContentText("Trwa analiza bezpieczeństwa rozmowy...")
                 .setSmallIcon(android.R.drawable.ic_secure)
                 .setContentIntent(pendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
@@ -140,8 +140,16 @@ public class MonitoringService extends Service {
         String lowerText = text.toLowerCase();
         for (String keyword : activeKeywords) {
             if (lowerText.contains(keyword.toLowerCase())) {
-                dbHelper.addAlert(keyword, text, "PENDING");
-                sendAlertToGuardians(keyword, text);
+                // ANALIZA SENTYMENTU / RYZYKA
+                SentimentAnalyzer.AnalysisResult result = SentimentAnalyzer.analyze(text, keyword);
+                
+                // Zapisujemy alert z poziomem ryzyka
+                dbHelper.addAlert(keyword, text, "PENDING", result.level.name());
+                
+                // Wysyłamy SMS tylko jeśli ryzyko jest powyżej LOW
+                if (result.level != SentimentAnalyzer.RiskLevel.LOW) {
+                    sendAlertToGuardians(keyword, text, result.level.name());
+                }
                 break;
             }
         }
@@ -149,28 +157,20 @@ public class MonitoringService extends Service {
 
     private ArrayList<String> getActiveKeywords() {
         ArrayList<String> list = new ArrayList<>();
-        if (sharedPreferences.getBoolean("detect_drugs", true)) {
-            list.addAll(Arrays.asList(drugKeywords));
-        }
-        if (sharedPreferences.getBoolean("detect_self_harm", true)) {
-            list.addAll(Arrays.asList(selfHarmKeywords));
-        }
-        if (sharedPreferences.getBoolean("detect_bullying", true)) {
-            list.addAll(Arrays.asList(bullyingKeywords));
-        }
-        if (sharedPreferences.getBoolean("detect_alcohol", true)) {
-            list.addAll(Arrays.asList(alcoholKeywords));
-        }
+        if (sharedPreferences.getBoolean("detect_drugs", true)) list.addAll(Arrays.asList(drugKeywords));
+        if (sharedPreferences.getBoolean("detect_self_harm", true)) list.addAll(Arrays.asList(selfHarmKeywords));
+        if (sharedPreferences.getBoolean("detect_bullying", true)) list.addAll(Arrays.asList(bullyingKeywords));
+        if (sharedPreferences.getBoolean("detect_alcohol", true)) list.addAll(Arrays.asList(alcoholKeywords));
         return list;
     }
 
-    private void sendAlertToGuardians(String keyword, String fullText) {
+    private void sendAlertToGuardians(String keyword, String fullText, String riskLevel) {
         long currentTime = System.currentTimeMillis();
         if (currentTime - lastSmsTime < 120000) return;
 
         String userName = sharedPreferences.getString("user_name", "Twoje dziecko");
-        String message = "ALERT YouthGuard! " + userName + " może potrzebować pomocy. Wykryto słowo: \"" + 
-                         keyword + "\". Fragment rozmowy: \"" + fullText + "\". Odpisz POTWIERDZAM, aby uruchomić alarm na jego telefonie.";
+        String message = "⚠️ ALERT YouthGuard [" + riskLevel + "]! " + userName + " może potrzebować pomocy. Wykryto: \"" + 
+                         keyword + "\". Kontekst: \"" + fullText + "\". Odpisz POTWIERDZAM.";
 
         try {
             SmsManager smsManager;
@@ -180,17 +180,16 @@ public class MonitoringService extends Service {
                 smsManager = SmsManager.getDefault();
             }
 
-            List<Guardian> guardians = dbHelper.getAllGuardians(); // <-- NAPRAWIONA LINIJKA
+            List<Guardian> guardians = dbHelper.getAllGuardians();
             boolean sent = false;
             
-            for (Guardian guardian : guardians) { // <-- NAPRAWIONA LINIJKA
+            for (Guardian guardian : guardians) {
                 String num = guardian.getPhone();
                 if (num != null && !num.isEmpty()) {
                     String cleanNum = num.replaceAll("\\s+", "");
                     ArrayList<String> parts = smsManager.divideMessage(message);
                     smsManager.sendMultipartTextMessage(cleanNum, null, parts, null, null);
                     sent = true;
-                    Log.d("YouthGuardService", "Wysłano SMS do: " + cleanNum);
                 }
             }
             if (sent) lastSmsTime = currentTime;
@@ -201,11 +200,7 @@ public class MonitoringService extends Service {
 
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel serviceChannel = new NotificationChannel(
-                    CHANNEL_ID,
-                    "YouthGuard Monitoring Service",
-                    NotificationManager.IMPORTANCE_LOW
-            );
+            NotificationChannel serviceChannel = new NotificationChannel(CHANNEL_ID, "YouthGuard Service", NotificationManager.IMPORTANCE_LOW);
             NotificationManager manager = getSystemService(NotificationManager.class);
             if (manager != null) manager.createNotificationChannel(serviceChannel);
         }
@@ -214,14 +209,8 @@ public class MonitoringService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (speechRecognizer != null) {
-            speechRecognizer.destroy();
-        }
+        if (speechRecognizer != null) speechRecognizer.destroy();
     }
 
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
-    }
+    @Nullable @Override public IBinder onBind(Intent intent) { return null; }
 }
