@@ -4,42 +4,47 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    android:background="@drawable/gradient_background">
+    android:background="@color/black"
+    android:fitsSystemWindows="true">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
-        android:background="@android:color/transparent"
+        android:background="@color/black"
         app:elevation="0dp">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/settingsToolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="Ustawienia"
+            app:title="KONFIGURACJA SYSTEMU"
             app:titleCentered="true"
-            app:titleTextColor="@color/text_primary"/>
+            app:titleTextColor="@color/text_primary"
+            app:navigationIcon="@android:drawable/ic_menu_revert"
+            app:navigationIconTint="@color/primary"/>
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:padding="24dp">
+        android:paddingHorizontal="24dp"
+        android:paddingTop="12dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <!-- SEKCJA PROFILU -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="2dp"
+                app:cardCornerRadius="24dp"
                 app:cardBackgroundColor="@color/card_background"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/card_stroke"
                 android:layout_marginBottom="24dp">
 
                 <LinearLayout
@@ -51,17 +56,21 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Imię Twojego dziecka"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/text_primary"
+                        android:text="IDENTYFIKACJA UŻYTKOWNIKA"
+                        android:textSize="11sp"
+                        android:letterSpacing="0.1"
+                        android:textColor="@color/primary"
                         android:layout_marginBottom="16dp"/>
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Imię (np. Ania, Tomek)"
+                        android:hint="Imię Twojego dziecka"
                         app:startIconDrawable="@android:drawable/ic_menu_edit"
+                        app:startIconTint="@color/primary"
+                        app:hintTextColor="@color/text_secondary"
+                        app:boxStrokeColor="@color/primary"
+                        android:textColorHint="@color/text_secondary"
                         style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -69,17 +78,21 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="textPersonName"
-                            android:textColor="?attr/colorOnSurface"/>
+                            android:textColor="@color/text_primary"
+                            android:fontFamily="monospace"/>
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- SEKCJA FILTRÓW -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="2dp"
+                app:cardCornerRadius="24dp"
                 app:cardBackgroundColor="@color/card_background"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/card_stroke"
                 android:layout_marginBottom="32dp">
 
                 <LinearLayout
@@ -91,41 +104,45 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Wykrywane Kategorie Zagrożeń"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/text_primary"
+                        android:text="FILTRY ANALIZY TREŚCI"
+                        android:textSize="11sp"
+                        android:letterSpacing="0.1"
+                        android:textColor="@color/primary"
                         android:layout_marginBottom="16dp"/>
 
-                    <CheckBox
+                    <com.google.android.material.checkbox.MaterialCheckBox
                         android:id="@+id/checkDrugs"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Narkotyki i używki"
                         android:textColor="@color/text_primary"
+                        app:buttonTint="@color/primary"
                         android:layout_marginBottom="8dp"/>
 
-                    <CheckBox
+                    <com.google.android.material.checkbox.MaterialCheckBox
                         android:id="@+id/checkSelfHarm"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Samookaleczenia i myśli samobójcze"
                         android:textColor="@color/text_primary"
+                        app:buttonTint="@color/primary"
                         android:layout_marginBottom="8dp"/>
                         
-                    <CheckBox
+                    <com.google.android.material.checkbox.MaterialCheckBox
                         android:id="@+id/checkBullying"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Nękanie i przemoc rówieśnicza"
                         android:textColor="@color/text_primary"
+                        app:buttonTint="@color/primary"
                         android:layout_marginBottom="8dp"/>
 
-                    <CheckBox
+                    <com.google.android.material.checkbox.MaterialCheckBox
                         android:id="@+id/checkAlcohol"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Alkohol i imprezy"
+                        app:buttonTint="@color/primary"
                         android:textColor="@color/text_primary"/>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -133,13 +150,24 @@
             <Button
                 android:id="@+id/backBtn"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:text="Zapisz i wróć"
-                app:icon="@android:drawable/ic_menu_save"
-                app:iconGravity="textStart"
-                android:backgroundTint="@color/accent"
-                android:textColor="@color/text_primary"
-                style="@style/Widget.Material3.Button"/>
+                android:layout_height="64dp"
+                android:text="ZAPISZ I ZASTOSUJ"
+                android:textStyle="bold"
+                android:letterSpacing="0.05"
+                android:backgroundTint="@color/primary"
+                android:textColor="@color/black"
+                app:cornerRadius="16dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="YOUTHGUARD SYSTEM SETTINGS v2.1"
+                android:textSize="9sp"
+                android:letterSpacing="0.2"
+                android:textColor="#33FFFFFF"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="40dp"/>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

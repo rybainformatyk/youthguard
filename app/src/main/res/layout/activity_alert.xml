@@ -3,55 +3,140 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#4A90E2" 
-    android:padding="24dp">
+    android:background="@color/black"
+    android:fitsSystemWindows="true"
+    android:paddingHorizontal="24dp"
+    android:paddingTop="12dp"
+    android:paddingBottom="32dp"> <!-- Zwiększony margines dolny -->
 
-    <ImageView
-        android:id="@+id/alertIcon"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="60dp"
-        android:src="@android:drawable/ic_dialog_info"
-        app:tint="#FFFFFF" />
-
-    <TextView
-        android:id="@+id/alertTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/alertIcon"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="24dp"
-        android:text="Opiekun jest z Tobą!"
-        android:textColor="#FFFFFF"
-        android:textSize="32sp"
-        android:textStyle="bold"
-        android:textAlignment="center"/>
-
-    <TextView
-        android:id="@+id/alertMessage"
+    <!-- Główna rama ostrzegawcza -->
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/alertTitle"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="24dp"
-        android:text="Twój opiekun został poinformowany i jest gotowy, by Ci pomóc.\n\nJeśli czujesz się niepewnie, zakończ rozmowę."
-        android:textColor="#FFFFFF"
-        android:textSize="22sp"
-        android:textAlignment="center"
-        android:lineSpacingExtra="8dp"/>
+        android:layout_height="match_parent"
+        app:cardCornerRadius="32dp"
+        app:cardBackgroundColor="@color/black"
+        app:cardElevation="0dp"
+        app:strokeWidth="3dp"
+        app:strokeColor="@color/mic_idle">
 
-    <Button
-        android:id="@+id/dismissAlertBtn"
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="40dp"
-        android:text="ZROZUMIAŁEM"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:textColor="#4A90E2"
-        android:backgroundTint="#FFFFFF"
-        app:cornerRadius="16dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <!-- STYLIZOWANY TOOLBAR SYSTEMOWY (Wewnątrz karty) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:background="#1AFF3D00"
+                android:gravity="center_vertical">
+                
+                <View
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:background="@drawable/mic_dot"
+                    android:backgroundTint="@color/mic_idle"
+                    android:layout_marginEnd="12dp"/>
+                
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="PRIORITY ALERT // CRITICAL"
+                    android:textSize="10sp"
+                    android:letterSpacing="0.2"
+                    android:textStyle="bold"
+                    android:textColor="@color/mic_idle"
+                    android:fontFamily="monospace"/>
+                
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="v2.0"
+                    android:textSize="10sp"
+                    android:textColor="#33FF3D00"
+                    android:fontFamily="monospace"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="24dp">
+
+                <ImageView
+                    android:id="@+id/alertIcon"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:src="@android:drawable/ic_dialog_alert"
+                    app:tint="@color/mic_idle"
+                    android:layout_marginBottom="24dp"/>
+
+                <TextView
+                    android:id="@+id/alertTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ZAGROŻENIE\nPOTWIERDZONE"
+                    android:textColor="@color/white"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:textAlignment="center"
+                    android:lineSpacingMultiplier="0.9"
+                    android:layout_marginBottom="24dp"/>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="16dp"
+                    app:cardBackgroundColor="#0A0A0A"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="#33FF3D00"
+                    android:layout_marginBottom="32dp">
+
+                    <TextView
+                        android:id="@+id/alertMessage"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="16dp"
+                        android:text="Opiekun został powiadomiony i aktywował procedurę bezpieczeństwa.\n\nZachowaj spokój."
+                        android:textColor="@color/text_secondary"
+                        android:textSize="15sp"
+                        android:textAlignment="center"
+                        android:lineSpacingExtra="4dp"
+                        android:fontFamily="monospace"/>
+                </com.google.android.material.card.MaterialCardView>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
+
+                <Button
+                    android:id="@+id/dismissAlertBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    android:text="POTWIERDZAM ODBIÓR"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:backgroundTint="@color/mic_idle"
+                    app:cornerRadius="16dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="YOUTHGUARD SECURITY PROTOCOL"
+                    android:textSize="9sp"
+                    android:letterSpacing="0.3"
+                    android:textColor="#22FFFFFF"
+                    android:layout_marginTop="16dp"/>
+
+            </LinearLayout>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
 </RelativeLayout>
