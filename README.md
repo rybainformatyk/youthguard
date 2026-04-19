@@ -1,62 +1,67 @@
 # 🛡️ YouthGuard - Twój Cyfrowy Anioł Stróż
 
-**YouthGuard** to innowacyjna aplikacja na system Android, zaprojektowana z myślą o bezpieczeństwie dzieci i młodzieży. Aplikacja działa jako dyskretny system monitorowania rozmów telefonicznych, wykorzystujący sztuczną inteligencję (Speech-to-Text) do wykrywania potencjalnych zagrożeń w czasie rzeczywistym.
+**YouthGuard** (System CyberSec) to innowacyjna platforma bezpieczeństwa nowej generacji, która redefiniuje pojęcie kontroli rodzicielskiej poprzez aktywną interwencję i analizę mowy w czasie rzeczywistym (Live STT).
 
 ---
 
-## 🚀 Kluczowe Funkcje
+## 🚀 Strategia Biznesowa: Operator vs Subskrypcja
 
-### 🎤 Monitoring Rozmów na Żywo
-Aplikacja analizuje mowę podczas połączeń telefonicznych, przetwarzając ją na tekst. Działa w tle, zapewniając ciągłą ochronę bez przerywania rozmowy.
+Aby zmaksymalizować zasięg i rentowność, YouthGuard opiera się na **modelu hybrydowym**:
 
-### 🔍 Inteligentna Analiza Zagrożeń
-System automatycznie wyszukuje słowa kluczowe w czterech krytycznych kategoriach:
-*   **Narkotyki i używki** (np. dopalacze, amfetamina).
-*   **Samookaleczenia** (np. myśli samobójcze, przemoc wobec siebie).
-*   **Nękanie (Bullying)** (np. zastraszanie, wyśmiewanie).
-*   **Alkohol** (np. imprezy, nadużywanie substancji).
+### 🏢 Model B2B2C (Partnerstwa z Operatorami)
+*   **Jak to działa:** Integracja z pakietami typu „Bezpieczna Rodzina” w sieciach takich jak Orange, Play, T-Mobile czy Plus.
+*   **Zaleta:** Błyskawiczna skala i wysokie zaufanie użytkowników. Model Rev-Share zapewnia stabilny strumień przychodów przy niskim koszcie pozyskania klienta (CAC).
 
-### 📲 System Alertów SMS
-W momencie wykrycia niebezpieczeństwa, YouthGuard natychmiast wysyła wiadomość SMS do zdefiniowanych **Zaufanych Opiekunów**. SMS zawiera:
-*   Informację o wykrytym zagrożeniu.
-*   Fragment rozmowy (kontekst), w którym padło słowo.
-
-### 🚨 Zdalna Interwencja
-Opiekun może zareagować natychmiast. Odpisując na alert słowem **"POTWIERDZAM"**, zdalnie uruchamia na telefonie dziecka głośny alarm dźwiękowy i wizualny, mający na celu przerwanie niebezpiecznej sytuacji.
-
-### 🌑 Interfejs Cyber-Refined
-Nowoczesny wygląd typu **Amoled Black** z neonowymi akcentami. Interfejs jest nie tylko estetyczny, ale i czytelny, z wyraźną sygnalizacją stanu ochrony (Zielony - Aktywna / Czerwony - Wyłączona).
+### 📱 Model B2C (Bezpośrednia Subskrypcja SaaS)
+*   **Jak to działa:** Klasyczny model subskrypcyjny w Google Play Store (np. 29 PLN/mc).
+*   **Zaleta:** Bezpośrednia kontrola nad marżą i szybkie wdrażanie nowych funkcji (MVP).
+*   **Werdykt:** Budujemy bazę użytkowników w modelu B2C jako „Proof of Concept”, by stać się pożądanym partnerem dla gigantów telekomunikacyjnych.
 
 ---
 
-## 🛠️ Technologia
+## 📊 Konkurencja i Analiza Rynku
 
-Aplikacja została zbudowana przy użyciu nowoczesnych technologii Android:
-*   **Język:** Java
-*   **Baza Danych:** SQLite (lokalna historia alertów i lista opiekunów).
-*   **Speech-to-Text:** Android SpeechRecognizer API.
-*   **Komunikacja:** BroadcastReceivers dla SMS i stanu połączeń.
-*   **UI/UX:** Material Design 3, optymalizacja pod ekrany Amoled.
+Większość rozwiązań na rynku to „pasywni obserwatorzy”. YouthGuard jest **aktywnym defensorem**.
+
+| Rozwiązanie | Co monitoruje? | Reakcja | Główne braki |
+| :--- | :--- | :--- | :--- |
+| **Google Family Link** | Czas, Aplikacje, GPS | Blokada urządzenia | Brak analizy treści rozmów i SMS |
+| **Bark (USA)** | SMS, Social Media | Powiadomienie push | Słaba analiza rozmów głosowych na żywo |
+| **Life360** | Lokalizacja, Prędkość | Powiadomienie o wypadku | Brak ochrony przed hejtem i używkami |
+| **YouthGuard** | **Mowa (Live STT), SMS** | **Głośny Alarm (Interwencja)** | Wymaga dużej mocy procesora (Edge AI) |
+
+---
+
+## 💎 Czym YouthGuard wygrywa? (Differentiators)
+
+### 🚨 1. Od "Monitoringu" do "Interwencji"
+Konkurencja tylko informuje po fakcie. YouthGuard pozwala rodzicowi **fizycznie przerwać sytuację** głośnym alarmem, który słyszy zarówno dziecko, jak i potencjalny napastnik czy diler po drugiej stronie słuchawki.
+
+### 🔐 2. Edge AI (Prywatność 3.0)
+W dobie wycieków danych, YouthGuard promuje hasło: *"Rozmowa nigdy nie opuszcza telefonu"*. Cała analiza STT odbywa się lokalnie na procesorze urządzenia. To kluczowy atut marketingowy w 2024+ roku.
+
+### 🧠 3. Analiza Kontekstu
+Dzięki przesyłaniu fragmentów rozmowy w alercie SMS, rodzic unika „fałszywych alarmów”. System odróżnia tekst piosenki czy żart od realnego zagrożenia związanego z narkotykami czy przemocą.
+
+---
+
+## 🛠️ Specyfikacja Techniczna
+
+*   **Core:** Java / Android SDK
+*   **Security:** Local SQLite Encryption
+*   **AI Engine:** On-device Speech-to-Text (Edge Processing)
+*   **Interfejs:** Cyber-Refined UI (Amoled Optimized)
 
 ---
 
 ## 📖 Jak to działa?
 
-1.  **Dodaj Opiekuna:** Wprowadź numer telefonu zaufanej osoby lub wybierz go z kontaktów.
-2.  **Inicjuj Ochronę:** Kliknij przycisk na głównym ekranie. Dioda zmieni kolor na zielony.
-3.  **Rozmawiaj bezpiecznie:** YouthGuard czuwa w tle. Jeśli rozmówca nie jest na liście zaufanych, system analizuje mowę.
-4.  **Reaguj:** Jeśli opiekun otrzyma SMS, może zatwierdzić alarm, by pomóc dziecku.
+1.  **Inicjacja:** Rodzic konfiguruje filtry zagrożeń i zaufanych opiekunów.
+2.  **Czuwanie:** System monitoruje rozmowy przychodzące z nieznanych numerów.
+3.  **Detekcja:** Algorytm wykrywa słowo kluczowe i ocenia ryzyko (Sentiment Analysis).
+4.  **Alert:** Opiekun otrzymuje SMS z kontekstem rozmowy.
+5.  **Interwencja:** Odpowiedź "POTWIERDZAM" uruchamia system alarmowy na telefonie dziecka.
 
 ---
 
-## ⚠️ Uprawnienia
-
-Dla poprawnego działania aplikacja wymaga:
-*   `RECORD_AUDIO` – do analizy mowy.
-*   `SEND_SMS` & `RECEIVE_SMS` – do wysyłania i odbierania alertów.
-*   `READ_PHONE_STATE` – do wykrywania rozpoczęcia rozmowy.
-*   `POST_NOTIFICATIONS` – do informowania o działaniu systemu.
-
----
-
-*YouthGuard - Bo bezpieczeństwo Twojego dziecka jest najważniejsze.*
+*YouthGuard - Inteligentna tarcza w świecie cyfrowych zagrożeń.*
